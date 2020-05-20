@@ -34,6 +34,8 @@ class Transform:
             new_rotation = self.rotation * rhs.rotation
             new_translation = self.transform(rhs.translation)
             return Transform(new_rotation, new_translation)
+        elif t is Vec3:
+            return self.transform(rhs)
         else:
             assert False  # don't * not transforms with this
 

@@ -29,10 +29,14 @@ def test_init_and_eq_and_ne():
 def test_mul():
     T_a_b = Transform(Quat.from_rotation_on_axis(2, np.pi / 2), Vec3(1, 1, 1))
     T_b_c = Transform(Quat.from_rotation_on_axis(0, np.pi / 2), Vec3(-1, -2, -3))
+    c_p = Vec3(2, 3, 4)
 
     T_a_c = T_a_b * T_b_c
 
     assert isinstance(T_a_c, Transform)
+
+    a_p = T_a_c * c_p
+    assert isinstance(a_p, Vec3)
 
     # fmt: off
     np_T_a_b = np.array([
@@ -47,12 +51,22 @@ def test_mul():
         [0, 1, 0, -3],
         [0, 0, 0, 1],
     ])
+    np_c_p = np.array([
+        [2],
+        [3],
+        [4],
+        [1],
+    ])
     # fmt: on
 
     npgt_T_a_c = np_T_a_b @ np_T_b_c
+    npgt_a_p = np.squeeze(npgt_T_a_c @ np_c_p)[0:3]
     np_T_a_c = T_a_c.to_mat4_numpy()
+    np_a_p = a_p.to_numpy()
+
 
     assert np.allclose(np_T_a_c, npgt_T_a_c)
+    assert np.allclose(npgt_a_p, np_a_p)
 
 
 def test_numpy_interop():
